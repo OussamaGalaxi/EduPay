@@ -56,5 +56,5 @@ export function getNotificationTime(dateString) {
 }
 
 export function isAdmin(roles: string) {
-  return roles.includes('ROLE_ADMIN')
+  return roles.includes('ROLE_ADMIN') ? "ADMIN" : roles.includes('ROLE_STUDENT') ? "STUDENT" : null
 }

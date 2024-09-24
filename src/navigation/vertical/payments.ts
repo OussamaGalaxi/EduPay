@@ -9,7 +9,8 @@ export default [
       title: 'List',
       to: { name: 'payment-list' },
       icon: { icon: 'tabler-smart-home' },
-
+      action: 'manage',
+      subject: 'all',
     }]
   }
 ]

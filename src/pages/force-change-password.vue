@@ -66,29 +66,29 @@ const LogIn = async () => {
   try {
     loader.value = true
     // Fetch user data
-    console.table(credentials.value);
+    // console.table(credentials.value);
 
-    const data = await login(credentials.value);
-    setToken(data.access_token);
-    loader.value = true
-    const userData = await getCurrentUser();
-    setCurrentUser(userData);
-    console.log(userData);
+    // const data = await login(credentials.value);
+    // setToken(data.access_token);
+    // loader.value = true
+    // const userData = await getCurrentUser();
+    // setCurrentUser(userData);
+    // console.log(userData);
 
 
-    let userAbilityRules = [];
-    if (userData?.scope.includes("ROLE_ADMIN")) {
-      userAbilityRules = [
-        { action: "manage", subject: "all" },
-        { action: "manage", subject: "ADMIN" },
-        { action: "manage", subject: "STUDENT" },
-      ];
-    } else {
-      userAbilityRules = [{ action: "manage", subject: "STUDENT" }];
-    }
+    // let userAbilityRules = [];
+    // if (userData?.scope.includes("ROLE_ADMIN")) {
+    //   userAbilityRules = [
+    //     { action: "manage", subject: "all" },
+    //     { action: "manage", subject: "ADMIN" },
+    //     { action: "manage", subject: "STUDENT" },
+    //   ];
+    // } else {
+    //   userAbilityRules = [{ action: "manage", subject: "STUDENT" }];
+    // }
 
-    useCookie("userAbilityRules").value = userAbilityRules;
-    ability.update(userAbilityRules);
+    // useCookie("userAbilityRules").value = userAbilityRules;
+    // ability.update(userAbilityRules);
 
     // Redirect
     const isLoggedIn = !!(useCookie('userData').value && useCookie('accessToken').value)

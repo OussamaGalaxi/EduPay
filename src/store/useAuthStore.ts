@@ -25,13 +25,13 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref('')
   const accessToken = ref<string | null>(null)
 
-  watch(accessToken, (newToken) => {
-    useCookie('accessToken').value = newToken;
-  });
+  // watch(accessToken, (newToken) => {
+  //   useCookie('accessToken').value = newToken;
+  // });
 
-  watch(currentUser, (newUser: EduPayUser) => {
-    useCookie('userData').value = JSON.stringify(newUser);
-  });
+  // watch(currentUser, (newUser: EduPayUser) => {
+  //   useCookie('userData').value = JSON.stringify(newUser);
+  // });
 
   //👉 - Get All Student 
   async function login(credentials: Credentials) {
@@ -44,11 +44,17 @@ export const useAuthStore = defineStore('auth', () => {
       setToken(response.data.access_token)
 
       //👉 - Set CurrentUser
-      const { access_token, ...userData } = response.data
-      setCurrentUser(userData)
+      const { access_token, ...userData } = response.data;
+      setCurrentUser(userData);
 
       //👉 - Set UserAbilityRules
-      setUserAbilityRules()
+      (userData.roles.includes('ROLE_ADMIN')) ? setUserAbilityRules([
+        { action: "manage", subject: "all" },
+        { action: "manage", subject: "ADMIN" },
+        { action: "manage", subject: "STUDENT" },
+      ]) : setUserAbilityRules([
+        { action: "manage", subject: "STUDENT" },
+      ]);
 
       loading.value = false;
 
@@ -112,30 +118,38 @@ export const useAuthStore = defineStore('auth', () => {
   function setCurrentUser(currUser) {
     if (currUser) {
       const { roles, ...userWithoutRoles } = currUser;
-      currentUser.value = currUser;
-      userWithoutRoles.role = isAdmin(roles) ? "ADMIN" : "STUDENT";
-    } else {
-      console.warn("currUser is null, cannot set user role.");
-      currentUser.value = null;
-    }
+      console.log(isAdmin(roles));
 
+      userWithoutRoles.role = isAdmin(roles);
+      currentUser.value = userWithoutRoles;
+      console.table(currentUser.value)
+      useCookie('userData').value = JSON.stringify(currentUser.value);
+    } else {
+      console.info("currUser is null, cannot set user role.");
+      currentUser.value = null;
+      useCookie('userData').value = null;
+    }
   }
 
   function setToken(token: string | null) {
     accessToken.value = token
+    useCookie('accessToken').value = accessToken.value;
   }
 
-  function setUserAbilityRules() {
-    if (currentUser.value?.role === 'ADMIN') {
-      userAbilityRules.value = [
-        { action: "manage", subject: "all" },
-        { action: "manage", subject: "ADMIN" },
-        { action: "manage", subject: "STUDENT" },
-      ];
-    }
-    else {
-      userAbilityRules.value = [{ action: "manage", subject: "STUDENT" }];
-    }
+  function setUserAbilityRules(newUserAbilityRules) {
+    userAbilityRules.value = newUserAbilityRules
+    useCookie('userAbilityRules').value = userAbilityRules.value ? JSON.stringify(userAbilityRules.value) : null;
+
+    // if (currentUser.value?.role === 'ADMIN') {
+    //   userAbilityRules.value = [
+    //     { action: "manage", subject: "all" },
+    //     { action: "manage", subject: "ADMIN" },
+    //     { action: "manage", subject: "STUDENT" },
+    //   ];
+    // }
+    // else {
+    //   userAbilityRules.value = [{ action: "manage", subject: "STUDENT" }];
+    // }
   }
 
   function getUserData() {

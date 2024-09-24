@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store/useAuthStore';
 import type { RouteRecordRaw } from 'vue-router/auto';
 
 
@@ -11,8 +12,14 @@ export const redirects: RouteRecordRaw[] = [
     redirect: to => {
 
       // TODO: Get type from backend
+
+      console.log(useAuthStore().currentUser);
+
+
       const userData = useCookie<Record<string, unknown> | null | undefined>('userData')
-      const userRole = userData.value?.role
+      const userRole = userData.value?.roles.includes('ROLE_ADMIN') ? "ADMIN" : userData.value?.roles.includes('ROLE_STUDENT') ? "STUDENT" : null
+      console.log(userRole);
+
 
       if (userRole === 'ADMIN')
         return { name: 'root' }

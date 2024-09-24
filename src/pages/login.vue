@@ -18,6 +18,8 @@ definePage({
   meta: {
     layout: "blank",
     unauthenticatedOnly: true,
+    action: 'manage',
+    subject: 'all',
   }
 });
 
@@ -61,24 +63,29 @@ const LogIn = async () => {
         theme: useCookie('EduPayment-theme').value || 'auto'
       });
     }
-    //👉 -  Update Cookies for each User
-    useCookie('accessToken').value = accessToken.value;
-    useCookie('userData').value = currentUser.value ? JSON.stringify(currentUser.value) : null;
-    useCookie('userAbilityRules').value = userAbilityRules.value ? JSON.stringify(userAbilityRules.value) : null;
-    ability.update(userAbilityRules.value || []);
+
 
     //👉 -  Check if the user has already changed their password.
     const userData = jwtDecode(accessToken.value!);
     console.log(userData);
 
     if (userData?.isPasswordChanged) {
-      await router.push(route.query.to ? String(route.query.to) : "/").then(() => {
+      console.error(userData.isPasswordChanged);
+      //👉 -  Update Acl rules for current User
+      ability.update(userAbilityRules.value || []);
+      console.table(userAbilityRules.value);
+
+      await router.push("/").then(() => {
         toast.success('Login successful ✅⚡', {
           theme: useCookie('EduPayment-theme').value || 'auto'
         })
       })
     } else {
-      await router.push(route.query.to ? String(route.query.to) : "/force-change-password");
+      console.error(userData?.isPasswordChanged);
+
+      ability.update(userAbilityRules.value || []);
+      console.table(userAbilityRules.value);
+      await router.push("/force-change-password");
     }
 
   } catch (err) {

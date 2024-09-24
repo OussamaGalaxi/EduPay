@@ -21,6 +21,17 @@ export const setupGuards = (router: _RouterTyped<RouteNamedMap & { [key: string]
       else
         return undefined
     }
+
+
+    // if (to.meta.public)
+    //   return
+
+    // if (!canNavigate(to)) {
+
+    //   return { name: 'not-authorized' }
+
+    // }
+
   })
 
 }

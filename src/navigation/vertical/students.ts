@@ -9,11 +9,15 @@ export default [
       title: 'List',
       to: { name: 'student-list' },
       icon: { icon: 'tabler-users' },
+      action: 'manage',
+      subject: 'all',
     },
     {
       title: 'Add',
       to: { name: 'student-add' },
       icon: { icon: 'tabler-user-plus' },
+      action: 'manage',
+      subject: 'all',
     }]
   }
 ]
